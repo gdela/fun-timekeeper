@@ -1,0 +1,11 @@
+body {
+    margin-top: 10px;
+}
+
+#race-log td+td, #race-log th+th {
+	text-align: right;
+}
+
+#race-log .total {
+	font-weight: bold;
+}

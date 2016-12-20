@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+	<appender name="RACE_LOG" class="ch.qos.logback.core.FileAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm} - %m%n</pattern>
+		</encoder>
+		<file>race.log</file>
+	</appender>
+	<logger name="pl.gdela.timekeeper.domain.RaceLog" level="INFO">
+		<appender-ref ref="RACE_LOG"/>
+	</logger>
+</configuration>
