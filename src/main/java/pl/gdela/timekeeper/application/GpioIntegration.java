@@ -19,7 +19,7 @@ import static com.pi4j.io.gpio.PinState.LOW;
 import static com.pi4j.io.gpio.RaspiBcmPin.GPIO_02;
 
 @Component
-@Profile("!dev")
+@Profile("live")
 public class GpioIntegration {
 
 	private static final Logger log = LoggerFactory.getLogger(GpioIntegration.class);
