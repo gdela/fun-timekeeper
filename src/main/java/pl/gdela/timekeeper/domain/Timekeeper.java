@@ -1,13 +1,17 @@
 package pl.gdela.timekeeper.domain;
 
 
-import net.jcip.annotations.ThreadSafe;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+
+import net.jcip.annotations.ThreadSafe;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import pl.gdela.timekeeper.domain.RaceEvent.Countdown;
+import pl.gdela.timekeeper.domain.RaceEvent.LapFinished;
+import pl.gdela.timekeeper.domain.RaceEvent.RaceFinished;
+import pl.gdela.timekeeper.domain.RaceEvent.RaceStarted;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,7 +37,7 @@ public class Timekeeper {
 	public synchronized void requestRaceStart(int numberOfLaps) {
 		// todo: make the countdown asynchronous
 		for (int i = 3; i >= 1; i--) {
-			eventPublisher.publishEvent(new RaceEvent.Countdown(i));
+			eventPublisher.publishEvent(new Countdown(i));
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException ignore) {
@@ -44,7 +48,7 @@ public class Timekeeper {
 		this.numberOfLaps = numberOfLaps;
 		currentLapNr = 1;
 		lapStarted = raceStarted = Instant.now();
-		eventPublisher.publishEvent(new RaceEvent.RaceStarted());
+		eventPublisher.publishEvent(new RaceStarted());
     }
 
     public synchronized void photocellInterrupted() {
@@ -57,7 +61,7 @@ public class Timekeeper {
 		int finishedLapNr = currentLapNr;
 		Instant lapEnded = Instant.now();
 		Duration finishedLapTime = Duration.between(lapStarted, lapEnded);
-		eventPublisher.publishEvent(new RaceEvent.LapFinished(finishedLapNr, finishedLapTime));
+		eventPublisher.publishEvent(new LapFinished(finishedLapNr, finishedLapTime));
 
 		if (finishedLapNr < numberOfLaps) {
 			currentLapNr++;
@@ -72,7 +76,7 @@ public class Timekeeper {
 	private void finishRace() {
 		Instant raceEnded = Instant.now();
 		Duration raceTime = Duration.between(raceStarted, raceEnded);
-		eventPublisher.publishEvent(new RaceEvent.RaceFinished(numberOfLaps, raceTime));
+		eventPublisher.publishEvent(new RaceFinished(numberOfLaps, raceTime));
 		raceStarted = null;
 	}
 }
