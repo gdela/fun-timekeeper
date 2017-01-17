@@ -75,4 +75,7 @@ public class ChroniclerTest {
 		assertThat(summary.bestLap).isEqualTo(Duration.ofMillis(333));
 		assertThat(summary.medLap).isEqualTo(Duration.ofMillis(333));
 	}
+
+	// todo: test recovery of history, move races.json file name to application.properties
+	// so that here we can use a separate file to do the integration testing
 }

@@ -1,6 +1,6 @@
 "use strict";
 
-var Timekeeper = (function () {
+var Index = (function () {
 
     var stomp;
 

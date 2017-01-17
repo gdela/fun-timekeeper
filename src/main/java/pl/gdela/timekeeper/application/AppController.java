@@ -18,9 +18,9 @@ import pl.gdela.timekeeper.domain.RaceSummary;
 import pl.gdela.timekeeper.domain.Timekeeper;
 
 @RestController
-public class TimekeeperController {
+public class AppController {
 
-	private static final Logger log = LoggerFactory.getLogger(TimekeeperController.class);
+	private static final Logger log = LoggerFactory.getLogger(AppController.class);
 
 	@Autowired
 	private Timekeeper timekeeper;
@@ -48,6 +48,7 @@ public class TimekeeperController {
 	 */
 	@RequestMapping(path = "interrupt-photocell", method = RequestMethod.POST)
 	private void interruptPhotocell() {
+		log.info("photocell interruption simulated");
 		timekeeper.photocellInterrupted();
 	}
 
