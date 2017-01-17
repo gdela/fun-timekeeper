@@ -22,6 +22,12 @@ public class TimekeeperTest {
 	@Mock
 	private EventPublisher eventPublisher;
 
+	private List<Object> getPublishedEvents() {
+		ArgumentCaptor<Object> argument = ArgumentCaptor.forClass(Object.class);
+		verify(eventPublisher, atLeast(1)).publishEvent(argument.capture());
+		return argument.getAllValues();
+	}
+
 	@Test
 	public void smoke_test() {
 		// given
@@ -32,9 +38,7 @@ public class TimekeeperTest {
 		timekeeper.photocellInterrupted();
 
 		// then
-		ArgumentCaptor<Object> argument = ArgumentCaptor.forClass(Object.class);
-		verify(eventPublisher, atLeast(1)).publishEvent(argument.capture());
-		List<Object> events = argument.getAllValues();
+		List<Object> events = getPublishedEvents();
 		assertThat(events.get(0)).isInstanceOf(RaceEvent.Countdown.class);
 		assertThat(events.get(1)).isInstanceOf(RaceEvent.Countdown.class);
 		assertThat(events.get(2)).isInstanceOf(RaceEvent.Countdown.class);

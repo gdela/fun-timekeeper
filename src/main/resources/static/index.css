@@ -2,10 +2,26 @@ body {
     margin-top: 10px;
 }
 
+#race-log {
+	margin-top: 5px;
+}
+
 #race-log td+td, #race-log th+th {
 	text-align: right;
 }
 
 #race-log .total {
 	font-weight: bold;
+}
+
+#history {
+	margin-top: 20px;
+}
+
+#history td, #history th {
+	font-size: 13px;
+}
+
+#history td+td, #history th+th {
+	text-align: right;
 }

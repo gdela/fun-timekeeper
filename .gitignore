@@ -1,5 +1,6 @@
 target/
-*.log
+races.log
+races.json
 
 ### STS ###
 .apt_generated

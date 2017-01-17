@@ -2,54 +2,73 @@
 
 var Timekeeper = (function () {
 
-    var stompClient;
+    var stomp;
 
 	var $raceLogTable;
+	var $historyTable;
 
-    $(document).ready(function() {
-        $('#start-race').click(startRace);
+	$(document).ready(function() {
 		$raceLogTable = $('#race-log tbody');
-    });
+		$historyTable = $('#history tbody');
+		initiate();
+	});
 
-	function startRace() {
-		if (stompClient != null) {
-			stompClient.send("/app/request-race-start");
-			return;
+	function initiate() {
+		stomp = Stomp.over(new SockJS('/stomp-endpoint'));
+		stomp.connect({}, function () {
+			$(window).on('beforeunload', disconnectStomp);
+			stomp.subscribe('/topic/countdown', parseAndCall(onCountdown));
+			stomp.subscribe('/topic/race-started', parseAndCall(onRaceStarted));
+			stomp.subscribe('/topic/lap-finished', parseAndCall(onLapFinished));
+			stomp.subscribe('/topic/race-finished', parseAndCall(onRaceFinished));
+			stomp.subscribe('/topic/race-summary', parseAndCall(onRaceSummary));
+			stomp.subscribe('/app/get-history', parseAndCall(showHistory));
+			$('#start-race').click(startRace);
+		});
+		function disconnectStomp() {
+			stomp.disconnect();
 		}
-        var socket = new SockJS('/stomp-endpoint');
-        stompClient = Stomp.over(socket);
-		stompClient.connect({}, function () {
-			stompClient.subscribe('/topic/countdown', callWithParsedBody(countdown));
-			stompClient.subscribe('/topic/race-started', callWithParsedBody(raceStarted));
-            stompClient.subscribe('/topic/lap-finished', callWithParsedBody(lapFinished));
-			stompClient.subscribe('/topic/race-finished', callWithParsedBody(raceFinished));
-			stompClient.send("/app/request-race-start");
-        });
-		function callWithParsedBody(delegatee) {
+		function parseAndCall(delegatee) {
 			return function (message) {
 				delegatee(JSON.parse(message.body));
 			}
 		}
 	}
 
-	function countdown(event) {
+	function startRace() {
+		stomp.send("/app/request-race-start");
+	}
+
+	function onCountdown(event) {
 		speak(event.timeToStart);
 	}
 
-	function raceStarted() {
+	function onRaceStarted() {
 		$raceLogTable.empty();
 		speak("Go!");
 	}
 
-    function lapFinished(event) {
-		$raceLogTable.append($('<tr><td>' + event.lapNr + '</td><td>' + event.lapTime.toFixed(3) + '</td></tr>'));
-        speak(event.lapTime.toFixed(1).toString());
+    function onLapFinished(event) {
+		$raceLogTable.append($('<tr><td>' + event.lapNr + '</td><td>' + format(event.lapTime, 3) + '</td></tr>'));
+        speak(format(event.lapTime, 1));
     }
 
-	function raceFinished(event) {
-		$raceLogTable.append($('<tr class="total"><td>Total</td><td>' + event.raceTime.toFixed(3) + '</td></tr>'));
-		stompClient.disconnect();
-		speak('Finished ' + event.numberOfLaps + ' laps in ' + event.raceTime.toFixed(0).toString() + ' seconds');
+	function onRaceFinished(event) {
+		$raceLogTable.append($('<tr class="total"><td>Total</td><td>' + format(event.raceTime, 1) + '</td></tr>'));
+		speak('Finished ' + event.numberOfLaps + ' laps in ' + format(event.raceTime, 0) + ' seconds');
+	}
+
+	function onRaceSummary(event) {
+		var $row = $('<tr></tr>');
+		$row.append('<td>' + event.numberOfLaps + '</td>');
+		$row.append('<td>' + format(event.raceTime, 1) + '</td>');
+		$row.append('<td>' + format(event.bestLap, 3) + '</td>');
+		$row.append('<td>' + format(event.medLap, 3) + '</td>');
+		$historyTable.prepend($row);
+	}
+
+	function showHistory(summaries) {
+		summaries.reverse().forEach(onRaceSummary);
 	}
 
 	function speak(text) {
@@ -57,6 +76,10 @@ var Timekeeper = (function () {
 		Sound.speak(text)
 	}
 
-    return {};
+	function format(value, fractionalDigits) {
+		return value.toFixed(fractionalDigits).toString();
+	}
+
+    return {}
 
 })();

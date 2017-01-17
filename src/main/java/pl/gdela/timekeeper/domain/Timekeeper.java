@@ -15,6 +15,10 @@ import pl.gdela.timekeeper.domain.RaceEvent.RaceStarted;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Coordinates the race and measures the amount of time taken to finish lap or race.
+ * Publishes appropriate {@link RaceEvent}s during the race.
+ */
 @Service
 @ThreadSafe
 public class Timekeeper {
