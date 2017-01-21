@@ -25,3 +25,15 @@ body {
 #history td+td, #history th+th {
 	text-align: right;
 }
+
+#history tr.good {
+	background-color: #fffbd0;
+}
+
+#history tr.best {
+	background-color: #ffe0c0;
+}
+
+#history td.best {
+	font-weight: bold;
+}

@@ -1,5 +1,8 @@
 "use strict";
 
+/**
+ * Utility to speak aloud what happens during the race.
+ */
 var Sound = (function () {
 
     var enabled = false;

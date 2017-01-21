@@ -1,6 +1,9 @@
 "use strict";
 
-var Index = (function () {
+/**
+ * Frontend controller of the application.
+ */
+var App = (function () {
 
     var stomp;
 

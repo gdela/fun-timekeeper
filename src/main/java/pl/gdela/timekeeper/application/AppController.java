@@ -17,6 +17,9 @@ import pl.gdela.timekeeper.domain.RaceEvent;
 import pl.gdela.timekeeper.domain.RaceSummary;
 import pl.gdela.timekeeper.domain.Timekeeper;
 
+/**
+ * Backend controller of the application.
+ */
 @RestController
 public class AppController {
 
