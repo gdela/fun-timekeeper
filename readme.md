@@ -12,7 +12,7 @@ and the timekeeper displays lap times and total race time. See it
 Usage Instructions
 ------------------
 
-1. Get a photocell with open collector transistor output, like [this one](photocell).
+1. Get a photocell with open collector transistor output, like [this one][photocell].
 1. Connect photocell power and ground as needed, and its output to [pin 13].
 1. Build `fun-timekeeper.jar` using maven or download the [latest release].
 1. Launch the timekeeper on your raspberry using java:
