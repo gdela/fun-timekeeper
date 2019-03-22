@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -34,10 +35,13 @@ public class AppController {
 	@Autowired
 	private SimpMessagingTemplate messaging;
 
+	@Value("${lapsPerRace}")
+	private int lapsPerRace;
+
 	@MessageMapping("/request-race-start")
 	private void requestRaceStart() {
 		log.info("race start requested");
-		timekeeper.requestRaceStart(5);
+		timekeeper.requestRaceStart(lapsPerRace);
 	}
 
 	@SubscribeMapping("/get-history")
